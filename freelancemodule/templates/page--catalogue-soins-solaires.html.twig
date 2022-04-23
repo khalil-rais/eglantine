@@ -1,0 +1,48 @@
+<header id="header">
+	{{ page.header.topheaderblock }}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4">
+				{{ page.header.sitebranding }}
+			</div>
+			<div class="col-md-8">
+				<div class="row">
+					<div class="col-md-10 pull-right headercontact">
+						{{ page.header.headercontact }}
+					</div>
+					<div class="col-md-10 pull-right">
+						{{ page.header.searchproductblock }}
+					</div>
+				</div>
+		</div>
+	</div>
+	{{ page.header.mainnavigation }}
+</header>
+<div id="inner-banner" class="catalogue_nos_packs">
+	<div class="container">
+	  <h1>Bleu De Chanel</h1>
+	  <em>We are Parfuma Perfume Store where you can explore all kinds of Perfume</em>
+	  {{ page.banner }}
+	</div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-10 col-sm-12 col-lg-2 col-lg-push-10">
+		<section id="sidebar">
+			{{ page.rightsidebar }}
+		</section>
+    </div>   
+    <div class="col-md-2 col-lg-2 col-lg-pull-2 col-sm-12">
+		<section id="sidebar">
+			{{ page.sidebar }}
+		</section>
+    </div>
+    <div class="col-md-10 col-lg-8 col-sm-12 col-lg-pull-2">
+		<section id="main">
+			 <div class="product-catalog row">
+				{{ page.content }}
+			</div>
+		</section>
+    </div>
+  </div>
+</div>

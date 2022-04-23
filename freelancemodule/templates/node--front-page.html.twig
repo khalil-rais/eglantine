@@ -1,0 +1,524 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display a node.
+ *
+ * Available variables:
+ * - node: The node entity with limited access to object properties and methods.
+ *   Only method names starting with "get", "has", or "is" and a few common
+ *   methods such as "id", "label", and "bundle" are available. For example:
+ *   - node.getCreatedTime() will return the node creation timestamp.
+ *   - node.hasField('field_example') returns TRUE if the node bundle includes
+ *     field_example. (This does not indicate the presence of a value in this
+ *     field.)
+ *   - node.isPublished() will return whether the node is published or not.
+ *   Calling other methods, such as node.delete(), will result in an exception.
+ *   See \Drupal\node\Entity\Node for a full list of public properties and
+ *   methods for the node object.
+ * - label: The title of the node.
+ * - content: All node items. Use {{ content }} to print them all,
+ *   or print a subset such as {{ content.field_example }}. Use
+ *   {{ content|without('field_example') }} to temporarily suppress the printing
+ *   of a given child element.
+ * - author_picture: The node author user entity, rendered using the "compact"
+ *   view mode.
+ * - metadata: Metadata for this node.
+ * - date: Themed creation date field.
+ * - author_name: Themed author name field.
+ * - url: Direct URL of the current node.
+ * - display_submitted: Whether submission information should be displayed.
+ * - attributes: HTML attributes for the containing element.
+ *   The attributes.class element may contain one or more of the following
+ *   classes:
+ *   - node: The current template type (also known as a "theming hook").
+ *   - node--type-[type]: The current node type. For example, if the node is an
+ *     "Article" it would result in "node--type-article". Note that the machine
+ *     name will often be in a short form of the human readable label.
+ *   - node--view-mode-[view_mode]: The View Mode of the node; for example, a
+ *     teaser would result in: "node--view-mode-teaser", and
+ *     full: "node--view-mode-full".
+ *   The following are controlled through the node publishing options.
+ *   - node--promoted: Appears on nodes promoted to the front page.
+ *   - node--sticky: Appears on nodes ordered above other non-sticky nodes in
+ *     teaser listings.
+ *   - node--unpublished: Appears on unpublished nodes visible only to site
+ *     admins.
+ * - title_attributes: Same as attributes, except applied to the main title
+ *   tag that appears in the template.
+ * - content_attributes: Same as attributes, except applied to the main
+ *   content tag that appears in the template.
+ * - author_attributes: Same as attributes, except applied to the author of
+ *   the node tag that appears in the template.
+ * - title_prefix: Additional output populated by modules, intended to be
+ *   displayed in front of the main title tag that appears in the template.
+ * - title_suffix: Additional output populated by modules, intended to be
+ *   displayed after the main title tag that appears in the template.
+ * - view_mode: View mode; for example, "teaser" or "full".
+ * - teaser: Flag for the teaser state. Will be true if view_mode is 'teaser'.
+ * - page: Flag for the full page state. Will be true if view_mode is 'full'.
+ * - readmore: Flag for more state. Will be true if the teaser content of the
+ *   node cannot hold the main body content.
+ * - logged_in: Flag for authenticated user status. Will be true when the
+ *   current user is a logged-in member.
+ * - is_admin: Flag for admin user status. Will be true when the current user
+ *   is an administrator.
+ *
+ *<li>
+ *								<a href="https://www.facebook.com/sharer.php?u={{ p.field_facebook_z_1_2_1.0.url }}" class="share">
+ *									<i class="fa fa-share-alt" aria-hidden="true"></i>
+ *								</a>
+ *							</li>
+ *							
+ * @see template_preprocess_node()
+ *
+ * @todo Remove the id attribute (or make it a class), because if that gets
+ *   rendered twice on a page this is invalid CSS for example: two lists
+ *   in different view modes.
+ *
+ * @ingroup themeable
+ *
+ *	{{ dump(node.field_carrousel_front_page.0|keys) }}
+ *	{{ dump(node.field_carrousel_front_page.0.target_id) }}
+ *	{% set khalil = paragraph_load(node.field_carrousel_front_page.0.target_id) %}
+ *	{{ dump("Tachroun") }}
+ *	{{ dump(node.field_carrousel_front_page|keys) }}
+ *	{{ dump("Tachroun2") }}
+ *	{{ dump(node.field_carrousel_front_page.0|keys) }}
+ *	{{ dump("Tachroun3") }}
+ *	{{ dump(node.field_carrousel_front_page.entity|keys) }}
+ *	{{ dump("Tachroun4") }}
+ *	{{ dump(node.field_carrousel_front_page.entity.field_picture_carousel.0.entity.fileuri) }}
+ *	{{ dump("Tachroun6") }}	
+ *	{{ dump(item.entity.field_main_title_carousel.0.entity.field_main_title_carousel.getValue()[0]['value'] ) }}
+ *	{{ dump("Tachroun7") }}	
+ *	{{ dump(item.entity.field_main_title_carousel.0.entity.field_url_carousel.uri ) }}
+ *	{{ dump("Tachroun8") }}	
+ *	{{ dump(item.entity.field_main_title_carousel.0.entity.field_sub_title_carousel.getValue()[0]['value'] ) }}
+ *	{{ dump("Tachroun9") }}	
+ *	{{ dump(item.entity.field_main_title_carousel.0.entity.field_url_carousel.title ) }}
+ *	{{ dump(node.field_carrousel_front_page.0.entity.translation(lang	).field_url_carousel.title) }}		
+ *	{{ dump("Tachroun10") }}	
+ *  {{ dump(lang) }}
+ *	{{ dump("Tachroun11") }}
+ *  {{ dump(node.field_carrousel_front_page.0.entity.translation(lang	).field_url_carousel.title) }} 
+ *	{{ dump("Tachroun12") }}
+ *	{{ dump(node.field_gallery_front_page.0.entity.translation(lang	).field_picture_gallery[0].entity.uri.0|keys) }}
+ *	{{ dump("Tachroun13") }}
+ *	{{ dump(file_url(node.field_gallery_front_page.0.entity.translation(lang	).field_picture_gallery[0].entity.fileuri)) }}
+ *	
+ */
+#}
+
+
+<div id="banner">
+  <div class="owl-carousel" id="home-banner">
+		
+		
+    {% for item in node.field_carrousel_front_page %}
+      {% if item.entity.translation(lang).field_picture_carousel.0.entity.fileuri %}
+      <div class="item"> 
+	  <img src="{{ file_url(item.entity.translation(lang).field_picture_carousel.0.entity.fileuri) }}" alt="img">
+        <div class="caption">
+          <div class="container">
+            <div class="slide-1">
+              <h1><em>{% if item.entity.translation(lang).field_main_title_carousel.0.entity.field_main_title_carousel.getValue()[0]['value'] is not empty %}{{ item.entity.translation(lang).field_main_title_carousel.0.entity.field_main_title_carousel.getValue()[0]['value'] }} {% endif %}</em>{% if item.entity.translation(lang).field_main_title_carousel.0.entity.field_sub_title_carousel.getValue()[0]['value']  is not empty %}{{ item.entity.translation(lang).field_main_title_carousel.0.entity.field_sub_title_carousel.getValue()[0]['value'] }}{% endif %}</h1>
+				{% if item.entity.translation(lang).field_url_carousel.uri is not empty %}
+					<a href="{{item.entity.translation(lang).field_url_carousel.uri}}" class="btn-style-1">{{item.entity.translation(lang).field_url_carousel.title}}</a>
+				{% endif %}
+			  </div>
+          </div>
+        </div>
+      </div>
+	  {% endif %}
+    {% endfor %}    
+  </div>
+</div>
+<div id="main"> 
+  <!--SERVICES SECTION START-->
+  <section class="services-section">
+    <div class="container">
+      <div class="row">
+        {% for item in node.field_3_b_h_front_page %}		  
+			<div class="col-md-4 col-sm-4">
+				<div class="box"> 
+					<img src="{{ file_url(item.entity.translation(lang).field_logo_3_b_h[0].entity.fileuri) }}" alt="img">
+					<div class="text-col"> 
+						<a href="{{item.entity.translation(lang).field_url_3_b_h.uri}}">{% if item.entity.translation(lang).field_main_title_3_b_h.getValue()[0]['value'] is not empty %}{{ item.entity.translation(lang).field_main_title_3_b_h.getValue()[0]['value'] }} {% endif %}</a>
+						<div>{% if item.entity.translation(lang).field_sub_title_3_b_h.getValue()[0]['value']  is not empty %}{{ item.entity.translation(lang).field_sub_title_3_b_h.getValue()[0]['value'] }}{% else %}<img src="/{{ base_path ~ directory }}/images/Pyament_Methods.png" alt="Moyens de Paiement">{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+       {% endfor %} 
+      </div>
+    </div>
+  </section>
+  <!--SERVICES SECTION END--> 
+  
+ 
+  <!--COLLECTION GALLERY START-->
+  <section class="collection-gallery">
+    <div class="container">
+      <div class="heading-style-1">
+        <h2>{{ 'Our Articles'|trans }}</h2>
+      </div>
+    </div>
+   
+    <div class="owl-carousel" id="collection-galeery-1">
+      {% for item in node.field_gallery_front_page %}
+        <div class="item">
+			<div class="frame">
+				<a href="{{ item.entity.translation(lang).field_url_gallery.0.url }}">
+					<img src="{{ file_url(item.entity.translation(lang).field_picture_gallery[0].entity.fileuri) }}" alt="img">
+				</a>
+			</div>
+        </div>
+      {% endfor %}  
+    </div>
+  </section>
+  <!--COLLECTION GALLERY END--> 
+  
+  
+  <!--ADS SECTION START-->
+  <section class="advertise-section">
+    <div class="container">
+      <div class="row">
+        {% for item in node.field_2_b_h_front_page %}
+
+        <div class="col-md-6 col-sm-8 col-sm-offset-2 col-md-offset-0">
+          <div class="box"> <img src="{{ file_url(item.entity.translation(lang).field_picture_2_b_h[0].entity.fileuri) }}" alt="img">
+            <div class="caption"> 
+              <strong class="title">{% if  item.entity.translation(lang).field_main_title_2_b_h.getValue()  is not empty %}{{ item.entity.translation(lang).field_main_title_2_b_h.getValue()[0]['value'] }} {% endif %}</strong>
+              <h2><a href="{{ item.entity.translation(lang).field_sub_title_2_b_h.0.url }}">{% if item.entity.translation(lang).field_sub_title_2_b_h.title  is not empty %}{{item.entity.translation(lang).field_sub_title_2_b_h.title}}{% endif %}</a></h2>			  
+              <a href="{{ item.entity.translation(lang).field_catalogue_2_b_h.0.url }}" class="link">{{ 'Browse the Catalog'|trans }}<i class="fa fa-chevron-right" aria-hidden="true"></i></a> </div>
+          </div>
+        </div>
+       {% endfor %} 
+      </div>
+    </div>
+  </section>
+  <!--ADS SECTION END--> 
+  
+  <!--FEATURED PRODUCTS SECTION START-->
+  <section class="featured-products">
+    <div class="container">
+      <div class="heading-style-1">
+        <h2>{{ 'Our Cares'|trans }}</h2>
+      </div>
+      <div class="row">
+        {% set val = 0 %}
+        {% for item in node.field_zone_1_2_1_front_page %}
+          {% set val = val + 1 %}
+          {% set p = item.entity.translation(lang) %}
+          {% if p.field_picture_z_1_2_1[0].entity is defined %}
+             {% set  url_image = file_url(p.field_picture_z_1_2_1[0].entity.fileuri) %}
+          {% endif %}
+          {% if val == 1 %}
+              <div class="col-md-6 col-sm-6 col-sm-offset-3 col-md-offset-0">
+                <div class="product-box">
+                  <div class="outer">
+                    <div class="product-frame"> {% if p.field_sale_z_1_2_1.value  == 1 %}<span class="sale-batch"> Sale</span>{% endif %} <img src="{{url_image}}" alt="img">
+                      <div class="caption">
+                        <ul>
+							<li>
+								<a href="{{ p.field_facebook_z_1_2_1.0.url }}">
+									<i class="fa fa-eye" aria-hidden="true"></i>
+								</a>
+							</li>
+                          <li><a href="https://www.facebook.com/sharer.php?u={{ p.field_facebook_z_1_2_1.0.url }}"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-box">
+                    <h3>{% if p.field_main_title_z_1_2_1.value is not empty %} <a href="{{ p.field_facebook_z_1_2_1.0.url }}"> {{ p.field_main_title_z_1_2_1.value|raw }} </a>{% endif %}</h3>
+                    <strong class="price">{% if p.field_price_z_1_2_1.value is not empty %} {{ p.field_price_z_1_2_1.value|raw }} {% endif %}</strong> </div>
+                </div>
+              </div>
+          {% endif %}  
+
+          {% if (val == 2) or (val == 3) %}
+              {% if (val == 2) %}
+                <div class="col-md-3 col-sm-6 col-sm-offset-3 col-md-offset-0">
+              {% endif %} 
+                  <div class="product-box">
+                    <div class="outer">
+                      <div class="product-frame"> <img src="{{url_image}}" alt="img">
+                        <div class="caption">
+							<ul>
+								<li><a href="{{ p.field_facebook_z_1_2_1.0.url }}"><i class="fa fa-eye" aria-hidden="true"></i></a></li>
+								<li><a href="https://www.facebook.com/sharer.php?u={{ p.field_facebook_z_1_2_1.0.url }}"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+							</ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="text-box">
+                      <h3><a href="{{ p.field_facebook_z_1_2_1.0.url }}">{% if p.field_main_title_z_1_2_1.getValue() is not empty %}{{ p.field_main_title_z_1_2_1.getValue()[0]['value'] }}{% endif %}</a></h3>
+                      <strong class="price">{% if p.field_price_z_1_2_1.getValue() is not empty %} {{ p.field_price_z_1_2_1.getValue()[0]['value'] }} {% endif %}</strong> </div>
+                  </div>
+              {% if (val == 3) %}
+                </div>
+              {% endif %} 
+          {% endif %}       
+          {% if (val == 4) %}               
+              <div class="col-md-3 col-sm-6 col-sm-offset-3 col-md-offset-0">
+                <div class="product-box">
+                  <div class="outer">
+                    <div class="product-frame"> <img src="{{url_image}}" alt="img">
+                      <div class="caption">
+                        <ul>
+							<li><a href="{{ p.field_facebook_z_1_2_1.0.url }}"><i class="fa fa-eye" aria-hidden="true"></i></a></li>
+							<li><a href="https://www.facebook.com/sharer.php?u={{ p.field_facebook_z_1_2_1.0.url }}"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-box">
+                    <h3><a href="{{ p.field_facebook_z_1_2_1.0.url }}">{% if p.field_main_title_z_1_2_1.getValue() is not empty %}{{ p.field_main_title_z_1_2_1.getValue()[0]['value'] }}{% endif %}</a></h3>
+                    <strong class="price">{% if p.field_price_z_1_2_1.getValue() is not empty %} {{ p.field_price_z_1_2_1.getValue()[0]['value'] }} {% endif %}</strong> </div>
+                </div>
+              </div>
+          {% endif %}           
+        {% endfor %} 
+      </div>
+    </div>
+  </section>
+  <!--FEATURED PRODUCTS SECTION END--> 	   
+  <!--2 box horiz usage SECTION START-->
+  <section class="advertise-section second">
+    <div class="container">
+		<div class="heading-style-1">
+			<h2>{{ 'Our Categories'|trans }}</h2>
+		</div>
+      <div class="row">
+        {% for item in node.field_2_box_horiz_usage %}
+          {% set p = item.entity.translation(lang) %}
+          {% if p.field_picture_2_b_h[0].entity.fileuri is defined %}
+             {% set  url_image = file_url(p.field_picture_2_b_h[0].entity.fileuri) %}
+          {% endif %}
+         
+        <div class="col-md-6  col-sm-8 col-sm-offset-2 col-md-offset-0">
+          <div class="box"> <img src="{{ url_image }}" alt="img">
+            <div class="caption"> 
+              <strong class="title">{% if p.field_main_title_2_b_h.getValue() is not empty %}{{ p.field_main_title_2_b_h.getValue()[0]['value'] }} {% endif %}</strong>
+              <h2><a href="{{ p.field_sub_title_2_b_h.0.url }}">{% if p.field_sub_title_2_b_h.title  is not empty %}{{ p.field_sub_title_2_b_h.title }}{% endif %}</a></h2>
+              <a href="{{ p.field_catalogue_2_b_h.0.url }}" class="link">{{ 'Browse the Catalog'|trans }}<i class="fa fa-chevron-right" aria-hidden="true"></i></a> </div>
+          </div>
+        </div>
+       {% endfor %} 
+      </div>
+    </div>
+  </section>
+  <!--2 box horiz usage SECTION END--> 
+
+  
+	<section class="featured-products">
+		<div class="container">
+		
+			<div class="featured-product-banner" style="background-image:url({{ file_url(node.field_picture_2_queen[0].entity.fileuri) }})">
+				<div class="caption"> 
+				<strong class="title">{{ node.field_main_title_2_queen.getValue()[0]['value'] }} <b>{{ node.field_sub_title_2_queen.getValue()[0]['value'] }}</b></strong> 
+				<a href="{{node.field_url_catalogue_2_queen.0.url}}" class="btn-style-1">{{ 'Browse the Catalog'|trans }}<i class="fa fa-angle-right" aria-hidden="true"></i></a> 
+				</div>
+			</div>
+		</div>
+	</section>  
+  
+  
+  <!--Last 2 box horiz SECTION START-->
+  <section class="advertise-section second">
+    <div class="container">
+      <div class="row">
+        {% for item in node.field_2_box_horiz_last %}
+          {% set p = item.entity.translation(lang) %}
+          {% if p.field_picture_2_b_h[0].entity.fileuri is defined %}
+             {% set  url_image = file_url(p.field_picture_2_b_h[0].entity.fileuri) %}
+          {% endif %}
+         
+        <div class="col-md-6  col-sm-8 col-sm-offset-2 col-md-offset-0">
+          <div class="box"> <img src="{{ url_image }}" alt="img">
+            <div class="caption"> 
+              <strong class="title">{% if p.field_main_title_2_b_h.getValue() is not empty %}{{ p.field_main_title_2_b_h.getValue()[0]['value'] }} {% endif %}</strong>
+              <h2><a href="{{ p.field_sub_title_2_b_h.0.url }}">{% if p.field_sub_title_2_b_h.title  is not empty %}{{ p.field_sub_title_2_b_h.title }}{% endif %}</a></h2>
+              <a href="{{ p.field_catalogue_2_b_h.0.url }}" class="link">{{ 'Browse the Catalog'|trans }}<i class="fa fa-chevron-right" aria-hidden="true"></i></a> </div>
+          </div>
+        </div>
+       {% endfor %} 
+      </div>
+    </div>
+  </section>
+  <!--Last 2 box horiz SECTION END--> 
+  
+
+  
+  
+  <!--NEW ARRIVED JEWELRY SECTION START-->
+  <section class="new-arrived-product">
+    <div class="container">
+    </div>
+  </section>
+  <!--NEW ARRIVED JEWELRY SECTION END--> 
+
+
+  
+  <!--OUR PARTNERS SECTION START-->
+  <section id="nos-promesses" class="our-partners">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="holder">
+            <div class="heading-style-1">
+              <h2>{{ 'Our promise'|trans }}</h2>
+			  <h3>{{ 'Organic and natural ingredients.'|trans }}</h3>
+			  <h3>{{ 'No toxins or harmful chemicals.'|trans }}</h3>
+			  <h3>{{ 'Never tested on animals.'|trans }}</h3>
+			  <h3>{{ 'Ecological.'|trans }}</h3>
+			  <h3>{{ 'Handmade in Tunisia.'|trans }}</h3>
+            </div>
+            <div class="inner-col">
+              <div class="owl-carousel" id="partnets-slider">
+                {% for item in node.field_partners_front_page %}
+					{% set p = item.entity.translation(lang) %}
+					{% if p.field_picture_partner[0].entity.fileuri is defined %}
+						{% set  url_image = file_url(p.field_picture_partner[0].entity.fileuri) %}
+					{% endif %}
+					
+                  <div class="item">
+                    <div class="box"><a href="{{ p.field_url_partner.0.url }}"><img src="{{url_image}}" alt="img"></a></div>
+                  </div>
+                {% endfor %}                     
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--OUR PARTNERS SECTION END--> 
+ 
+<!--POPULAR JEWELRY SECTION START-->
+{#   <section class="popular-jewlery">
+    <div class="container">
+      <div class="heading-style-1">
+        <h2>Le Choix de nos Clients</h2>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="owl-carousel" id="popular-product">
+        <div class="item">
+          <div class="product-box">
+            <div class="outer">
+              <div class="product-frame"> <img src="images/popular-products-img-1.jpg" alt="img"> <a href="#" class="share"><i class="fa fa-share-alt" aria-hidden="true"></i></a>
+                <div class="caption">
+                  <ul>
+                    <li><a href="#"><i class="fa fa-eye" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="text-box">
+              <h3><a href="product-detail.html">Lancôme La Nuit Tresor</a></h3>
+              <strong class="price">$199.00 <span>-</span> $399.00</strong> </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="product-box">
+            <div class="outer">
+              <div class="product-frame"> <img src="images/popular-products-img-2.jpg" alt="img"> <a href="#" class="share"><i class="fa fa-share-alt" aria-hidden="true"></i></a>
+                <div class="caption">
+                  <ul>
+                    <li><a href="#"><i class="fa fa-eye" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="text-box">
+              <h3><a href="product-detail.html">Tom Ford Noir</a></h3>
+              <strong class="price">$99.00 <span>-</span> $199.00</strong> </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="product-box">
+            <div class="outer">
+              <div class="product-frame"> <img src="images/popular-products-img-3.jpg" alt="img"> <a href="#" class="share"><i class="fa fa-share-alt" aria-hidden="true"></i></a>
+                <div class="caption">
+                  <ul>
+                    <li><a href="#"><i class="fa fa-eye" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="text-box">
+              <h3><a href="product-detail.html">Dolce &amp; Gabbana</a></h3>
+              <strong class="price">$144.00 <span>-</span> $288.00</strong> </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="product-box">
+            <div class="outer">
+              <div class="product-frame"> <img src="images/popular-products-img-4.jpg" alt="img"> <a href="#" class="share"><i class="fa fa-share-alt" aria-hidden="true"></i></a>
+                <div class="caption">
+                  <ul>
+                    <li><a href="#"><i class="fa fa-eye" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="text-box">
+              <h3><a href="product-detail.html">Versace Eros</a></h3>
+              <strong class="price">$80.00 <span>-</span> $160.00</strong> </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="product-box">
+            <div class="outer">
+              <div class="product-frame"> <img src="images/popular-products-img-5.jpg" alt="img"> <a href="#" class="share"><i class="fa fa-share-alt" aria-hidden="true"></i></a>
+                <div class="caption">
+                  <ul>
+                    <li><a href="#"><i class="fa fa-eye" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="text-box">
+              <h3><a href="product-detail.html">Hugo Boss</a></h3>
+              <strong class="price">$199.00 <span>-</span> $299.00</strong> </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="product-box">
+            <div class="outer">
+              <div class="product-frame"> <img src="images/popular-products-img-6.jpg" alt="img"> <a href="#" class="share"><i class="fa fa-share-alt" aria-hidden="true"></i></a>
+                <div class="caption">
+                  <ul>
+                    <li><a href="#"><i class="fa fa-eye" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="text-box">
+              <h3><a href="product-detail.html">Pure Poison</a></h3>
+              <strong class="price">$199.00 <span>-</span> $399.00</strong> </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> #}
+  <!--POPULAR JEWLARY SECTION END--> 
+  
+  {{ my_popular_product_output }}  
+  
+</div>
+

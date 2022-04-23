@@ -1,0 +1,148 @@
+{% if node.field_couverture|length %}
+  <div id="inner-banner"  class="catalogue_parfum" style="background:url({{ file_url(node.field_couverture[0].entity.fileuri) }}) no-repeat left top/cover;">
+    <div class="container">
+      <h1>{{ label }}</h1>
+	  {% if content.field_sous_titre['#items'].getValue()|length %}
+		<em>{{ content.field_sous_titre['#items'].getValue()|first.value }}</em>
+	  {% endif %}
+      
+    </div>
+  </div>
+{% endif %} 
+  <!--MAIN START-->
+  <div id="main">
+    <section class="blog-section blog-detail">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-9 col-sm-8">
+            <div class="post-box">
+			  <div class="frame">
+					{% if node.field_image|length == 1%}
+						<img src="{{ file_url(node.field_image[0].entity.fileuri) }}"  alt="{{ node.field_image[0].alt }}">
+					
+					{% elseif node.field_image|length > 1%}
+						<div class="owl-carousel" id="article-banner">
+							{% for item  in node.field_image %}
+								<div class="item"> 
+									<img src="{{ file_url(item.entity.fileuri) }}" alt="item.alt">						
+								</div>
+							{% endfor %}
+						</div>
+					{% endif %}
+			  </div>
+              <div class="post-text">
+				{% if content.body %}
+					{{ content.body }}
+				{% endif %}
+
+				<p>&nbsp;</p>
+				
+                <div class="share-post"> <strong class="title">{{ 'Follow us'|trans }}</strong>
+                  <ul>
+                    <li class="social-color-1"><a href="https://twitter.com/majdoulinesadd2"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                    <li class="social-color-2"><a href="https://www.facebook.com/Eglantine.nature"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                    <li class="social-color-4"><a href="https://www.instagram.com/eglantine.nature/?hl=fr"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                    <li class="social-color-5"><a href="https://www.youtube.com/channel/UCo8zY77zONRgCxaccp-bKBA/?guided_help_flow=5"><i class="fa fa-youtube-play" aria-hidden="true"></i></a></li>
+                  </ul>
+                </div>
+				
+
+				
+				{% if logged_in %}
+					<!--
+						<div class="comment-box">
+						<h2>Leave a Comment</h2>
+						<form action="#">
+							<div class="row">
+							<div class="col-md-4">
+								<input type="text" placeholder="Your Name" required>
+							</div>
+							<div class="col-md-4">
+								<input type="text" placeholder="Your Email" required>
+							</div>
+							<div class="col-md-4">
+								<input type="text" placeholder="Your Contact" required>
+							</div>
+							<div class="col-md-12">
+								<textarea required cols="11" rows="11" placeholder="Comments"></textarea>
+							</div>
+							<div class="col-md-12">
+								<button type="submit">Get Contact<i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+							</div>
+							</div>
+						</form>
+						</div>
+					-->
+				{% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-4">
+            <aside class="sidebar">
+			
+              <div class="sidebar-box">
+                <h3>{{ 'Research'|trans }}</h3>
+                <div class="search-widget">
+                  {{ my_node_search }}
+                </div>
+              </div>
+			{% if content.field_en_bref_descriptif %}
+				<div class="sidebar-box">
+					<h3>{{ content.field_en_bref_titre }}</h3>
+					<div class="text-widget">
+						{{ content.field_en_bref_descriptif }}             
+					</div>
+				</div>
+			{% endif %}	
+{#
+/**
+*			{% if node.field_tags.entity.description.value | raw | length > 3 %}			  
+*              <div class="sidebar-box">
+*                <h3>{{ content.field_tags[0]['#title'] }}</h3>
+*                <div class="text-widget">
+*					{{ node.field_tags.entity.description.value | raw}}             
+*                </div>
+*              </div>
+*			{% endif %}
+**/			  
+#}			
+{#
+/**
+*              <div class="sidebar-box">
+*                <h3>Dans la même catégorie</h3>
+*                <div class="recent-post-widget">
+*                  <ul>
+*					{{ my_node_article_output }}
+*                  </ul>
+*                </div>
+*              </div>
+**/			  
+#}
+				{% if node.field_produits_annexes|length >= 1%}
+					<div class="sidebar-box">
+						<h3>{{ 'Read more'|trans }}</h3>
+						<div class="tags-widgets">
+							{% for item  in node.field_produits_annexes %}
+								<a href="{{ item.url }}">{{ item.title }}</a>
+							{% endfor %}
+						</div>
+					</div>
+				{% endif %}    
+				
+				<div class="sidebar-box">
+					<h3>{{ 'Our products'|trans }}</h3>
+					<div class="sidebar-product">
+						<div class="product-box">
+							<div class="owl-carousel" id="sidebar-product-post">
+							{{ my_node_popular_product }}
+							</div>
+						</div>
+					</div>
+				</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!--MAIN END--> 

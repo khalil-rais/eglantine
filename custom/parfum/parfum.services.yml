@@ -1,0 +1,9 @@
+services:
+  parfume_layout.salutation:
+    class: Drupal\parfum\HelloWorldSalutation
+    tags:
+      - { name: 'hello_world_salutation' }
+  parfume_layout.custom_order_processor:
+     class: '\Drupal\parfum\CustomOrderProcessor'
+     tags:
+       - { name: commerce_order.order_processor, priority: 300 }
